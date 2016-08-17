@@ -1,0 +1,7 @@
+[package]
+name = "aliasmethod"
+version = "0.1.0"
+authors = ["Tomochika Hara <rust@thara.jp>"]
+
+[dependencies]
+rand = "0.3"
