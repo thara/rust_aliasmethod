@@ -7,14 +7,14 @@ use rand::distributions::{IndependentSample, Range};
 #[derive(Debug)]
 pub struct AliasTable {
     len: i32,
-    prob: Vec<f32>,
+    prob: Vec<f64>,
     alias: Vec<usize>,
 }
 
 
 impl AliasTable {
 
-    pub fn new(weights: &Vec<f32>) -> Result<AliasTable, &'static str> {
+    pub fn new(weights: &Vec<f64>) -> Result<AliasTable, &'static str> {
         let n = weights.len() as i32;
 
         let sum = weights.iter().fold(0.0, |acc, x| acc + x);
@@ -22,7 +22,7 @@ impl AliasTable {
             return Err("sum of weights is 0.");
         }
 
-        let mut prob = weights.iter().map(|w| w * (n as f32) / sum).collect::<Vec<f32>>();
+        let mut prob = weights.iter().map(|w| w * (n as f64) / sum).collect::<Vec<f64>>();
         let mut h = 0;
         let mut l = n - 1;
         let mut hl: Vec<usize> = vec![0; n as usize];
@@ -70,26 +70,10 @@ impl AliasTable {
 
     pub fn random(&self) -> usize {
         let mut rng = rand::thread_rng();
-        let u = rng.gen::<f32>();
+        let u = rng.gen::<f64>();
         let range = Range::new(0, self.len);
         let n = range.ind_sample(&mut rng) as usize;
 
         if u <= self.prob[n] { n } else { self.alias[n] }
-    }
-}
-
-
-#[test]
-fn it_works() {
-    let weights: Vec<f32> = vec![30.0, 70.0];
-    let alias_table = AliasTable::new(&weights);
-    match alias_table {
-        Ok(v) => {
-            let r = v.random();
-            assert!(r <= weights.len() - 1);
-        }
-        Err(e) => {
-            assert!(false, "error : {}", e);
-        }
     }
 }
