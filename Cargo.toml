@@ -2,6 +2,13 @@
 name = "aliasmethod"
 version = "0.1.0"
 authors = ["Tomochika Hara <rust@thara.jp>"]
+description = "Implementation of Walker's Alias method by rust."
+homepage = "https://github.com/tomochikahara/rust_aliasmethod"
+repository = "https://github.com/tomochikahara/rust_aliasmethod"
+readme = "README.md"
+keywords = ["alias method", "random", "sampling", "algorithm"]
+license = "MIT"
+license-file = "LICENSE"
 
 [dependencies]
 rand = "0.3"
