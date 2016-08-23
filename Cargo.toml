@@ -2,7 +2,7 @@
 name = "aliasmethod"
 version = "0.1.0"
 authors = ["Tomochika Hara <rust@thara.jp>"]
-description = "Implementation of Walker's Alias method by rust."
+description = "Implementation of Walker's Alias method."
 homepage = "https://github.com/tomochikahara/rust_aliasmethod"
 repository = "https://github.com/tomochikahara/rust_aliasmethod"
 readme = "README.md"

@@ -1,3 +1,4 @@
+//! Implementation of [Walker's Alias method](https://en.wikipedia.org/wiki/Alias_method)
 extern crate rand;
 
 use self::rand::{thread_rng, ThreadRng, Rng};
