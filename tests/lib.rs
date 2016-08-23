@@ -3,7 +3,7 @@ extern crate rand;
 
 #[cfg(test)]
 mod tests {
-    use aliasmethod::AliasTable;
+    use aliasmethod::{new_alias_table, alias_method};
     use std::collections::HashMap;
 
     struct TestParam {weights: Vec<f64>, rates: Vec<f64>}
@@ -20,18 +20,17 @@ mod tests {
         ];
 
         for (param_no, &TestParam{ref weights, ref rates}) in params.into_iter().enumerate() {
-            let alias_table = AliasTable::new(&weights);
-            match alias_table {
+            match new_alias_table(&weights) {
                 Err(e) => {
                     assert!(false, "error : {}", e);
                 }
-                Ok(actual) => {
+                Ok(alias_table) => {
                     let sample: i64 = 100000;
 
                     let mut results: HashMap<usize, i64> = HashMap::new();
 
                     for _ in 0..sample {
-                        let n = actual.random();
+                        let n = alias_method().random(&alias_table);
                         let count = results.entry(n).or_insert(0);
                         *count += 1;
                     }
