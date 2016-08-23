@@ -6,7 +6,7 @@ description = "Implementation of Walker's Alias method."
 homepage = "https://github.com/tomochikahara/rust_aliasmethod"
 repository = "https://github.com/tomochikahara/rust_aliasmethod"
 readme = "README.md"
-keywords = ["alias method", "random", "sampling", "algorithm"]
+keywords = ["aliasmethod", "random", "sampling", "algorithm"]
 license = "MIT"
 license-file = "LICENSE"
 
