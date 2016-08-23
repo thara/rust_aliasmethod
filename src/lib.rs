@@ -77,3 +77,23 @@ impl AliasTable {
         if u <= self.prob[n] { n } else { self.alias[n] }
     }
 }
+
+
+#[test]
+fn generate_alias_table() {
+    let params = [
+        vec![1.0, 1.0],
+        vec![1.0, 1.0, 8.0],
+    ];
+    for sample_weights in params.into_iter() {
+        let alias_table = AliasTable::new(&sample_weights);
+        match alias_table {
+            Ok(AliasTable {prob, ..}) => {
+                assert_eq!(prob.len(), sample_weights.len());
+            }
+            Err(e) => {
+                assert!(false, "error : {}", e);
+            }
+        }
+    }
+}
