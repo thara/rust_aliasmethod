@@ -1,6 +1,7 @@
 //! Implementation of [Walker's Alias method](https://en.wikipedia.org/wiki/Alias_method)
 extern crate rand;
 
+use std::fmt;
 use self::rand::{thread_rng, ThreadRng, Rng};
 use self::rand::distributions::{IndependentSample, Range};
 
@@ -23,6 +24,20 @@ pub struct AliasTable {
     alias: Vec<usize>,
 }
 
+#[derive(Debug)]
+pub enum AliasMethodError {
+    ZeroTotalWeights,
+    Internal{ text: String },
+}
+
+impl fmt::Display for AliasMethodError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            AliasMethodError::ZeroTotalWeights => write!(f, "Total of weights is 0."),
+            AliasMethodError::Internal{ref text} => write!(f, "Internal error: {}", text),
+        }
+    }
+}
 
 impl<RNG: Rng> AliasMethod<RNG> {
 
@@ -47,12 +62,12 @@ impl<RNG: Rng> AliasMethod<RNG> {
 
 
 /// Creates a new AliasTable struct.
-pub fn new_alias_table(weights: &Vec<f64>) -> Result<AliasTable, &'static str> {
+pub fn new_alias_table(weights: &Vec<f64>) -> Result<AliasTable, AliasMethodError> {
     let n = weights.len() as i32;
 
     let sum = weights.iter().fold(0.0, |acc, x| acc + x);
     if sum == 0.0 {
-        return Err("sum of weights is 0.");
+        return Err(AliasMethodError::ZeroTotalWeights)
     }
 
     let mut prob = weights.iter().map(|w| w * (n as f64) / sum).collect::<Vec<f64>>();
@@ -78,10 +93,10 @@ pub fn new_alias_table(weights: &Vec<f64>) -> Result<AliasTable, &'static str> {
         let k = hl[(h - 1) as usize];
 
         if 1.0 < prob[j] {
-            panic!("MUST: {} <= 1", prob[j]);
+            return Err(AliasMethodError::Internal{text: format!("MUST: {} <= 1", prob[j])})
         }
         if prob[k] < 1.0 {
-            panic!("MUST: 1 <= {}", prob[k]);
+            return Err(AliasMethodError::Internal{text: format!("MUST: 1 <= {}", prob[k])})
         }
 
         a[j] = k;
