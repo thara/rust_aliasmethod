@@ -6,7 +6,7 @@ aliasmethod
 
 Implementation of [Walker's Alias method](https://en.wikipedia.org/wiki/Alias_method) by Rust.
 
-The algorithm is is principally useful when you need to random sampling with replacement by `O(1)`.
+The algorithm is principally useful when you need to random sampling with replacement by `O(1)`.
 
 ## Example
 
