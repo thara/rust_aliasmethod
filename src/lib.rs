@@ -28,6 +28,7 @@ pub struct AliasMethod<RNG: Rng> {
     rng: RNG,
 }
 
+
 /// Creates a new AliasMethod using the ThreadRng
 pub fn alias_method() -> AliasMethod<ThreadRng> {
     AliasMethod::new(thread_rng())
@@ -79,7 +80,7 @@ impl<RNG: Rng> AliasMethod<RNG> {
 
 
 /// Creates a new AliasTable struct.
-pub fn new_alias_table(weights: &Vec<f64>) -> Result<AliasTable, AliasMethodError> {
+pub fn new_alias_table(weights: &[f64]) -> Result<AliasTable, AliasMethodError> {
     let n = weights.len() as i32;
 
     let sum = weights.iter().fold(0.0, |acc, x| acc + x);
@@ -87,7 +88,7 @@ pub fn new_alias_table(weights: &Vec<f64>) -> Result<AliasTable, AliasMethodErro
         return Err(AliasMethodError::ZeroTotalWeights);
     }
 
-    let mut prob = weights.iter().map(|w| w * (n as f64) / sum).collect::<Vec<f64>>();
+    let mut prob = weights.iter().map(|w| w * f64::from(n) / sum).collect::<Vec<f64>>();
     let mut h = 0;
     let mut l = n - 1;
     let mut hl: Vec<usize> = vec![0; n as usize];
@@ -128,7 +129,7 @@ pub fn new_alias_table(weights: &Vec<f64>) -> Result<AliasTable, AliasMethodErro
 
     Ok(AliasTable {
         len: n,
-        prob: prob,
+        prob,
         alias: a,
     })
 }
