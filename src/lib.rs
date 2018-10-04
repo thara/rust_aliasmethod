@@ -22,13 +22,11 @@ extern crate rand;
 
 use std::fmt;
 use self::rand::{thread_rng, ThreadRng, Rng};
-use self::rand::distributions::{IndependentSample, Range};
 
 
 pub struct AliasMethod<RNG: Rng> {
     rng: RNG,
 }
-
 
 /// Creates a new AliasMethod using the ThreadRng
 pub fn alias_method() -> AliasMethod<ThreadRng> {
@@ -63,14 +61,13 @@ impl fmt::Display for AliasMethodError {
 impl<RNG: Rng> AliasMethod<RNG> {
     /// Creates a new AliasMethod struct.
     pub fn new(rng: RNG) -> Self {
-        AliasMethod { rng: rng }
+        AliasMethod { rng }
     }
 
     /// Chooses a index.
     pub fn random(&mut self, alias_table: &AliasTable) -> usize {
-        let u = self.rng.next_f64();
-        let range = Range::new(0, alias_table.len);
-        let n = range.ind_sample(&mut self.rng) as usize;
+        let u = self.rng.gen::<f64>();
+        let n = self.rng.gen_range(0, alias_table.len) as usize;
 
         if u <= alias_table.prob[n] {
             n

@@ -11,4 +11,4 @@ license = "MIT"
 license-file = "LICENSE"
 
 [dependencies]
-rand = "0.3"
+rand = "0.5"
