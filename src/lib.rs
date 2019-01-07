@@ -76,7 +76,7 @@ impl<RNG: Rng> AliasMethod<RNG> {
 }
 
 /// Creates a new AliasTable struct.
-pub fn new_alias_table(weights: &Vec<f64>) -> Result<AliasTable, AliasMethodError> {
+pub fn new_alias_table(weights: &[f64]) -> Result<AliasTable, AliasMethodError> {
     let n = weights.len() as i32;
 
     let sum = weights.iter().fold(0.0, |acc, x| acc + x);
