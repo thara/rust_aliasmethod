@@ -35,7 +35,7 @@ pub fn alias_method() -> AliasMethod<ThreadRng> {
 
 #[derive(Debug)]
 pub struct AliasTable {
-    len: i32,
+    len: i64,
     prob: Vec<f64>,
     alias: Vec<usize>,
 }
@@ -77,7 +77,7 @@ impl<RNG: Rng> AliasMethod<RNG> {
 
 /// Creates a new AliasTable struct.
 pub fn new_alias_table(weights: &[f64]) -> Result<AliasTable, AliasMethodError> {
-    let n = weights.len() as i32;
+    let n = weights.len() as i64;
 
     let sum = weights.iter().fold(0.0, |acc, x| acc + x);
     if sum == 0.0 {
