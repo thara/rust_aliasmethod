@@ -22,7 +22,9 @@ extern crate rand;
 
 use self::rand::distributions::{IndependentSample, Range};
 use self::rand::{thread_rng, Rng, ThreadRng};
-use std::fmt;
+
+pub mod errors;
+use errors::AliasMethodError;
 
 pub struct AliasMethod<RNG: Rng> {
     rng: RNG,
@@ -38,21 +40,6 @@ pub struct AliasTable {
     len: i64,
     prob: Vec<f64>,
     alias: Vec<usize>,
-}
-
-#[derive(Debug)]
-pub enum AliasMethodError {
-    ZeroTotalWeights,
-    Internal { text: String },
-}
-
-impl fmt::Display for AliasMethodError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            AliasMethodError::ZeroTotalWeights => write!(f, "Total of weights is 0."),
-            AliasMethodError::Internal { ref text } => write!(f, "Internal error: {}", text),
-        }
-    }
 }
 
 impl<RNG: Rng> AliasMethod<RNG> {
