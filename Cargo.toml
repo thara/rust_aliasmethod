@@ -7,8 +7,8 @@ homepage = "https://github.com/thara/rust_aliasmethod"
 repository = "https://github.com/thara/rust_aliasmethod"
 readme = "README.md"
 keywords = ["aliasmethod", "random", "sampling", "algorithm"]
-license = "MIT"
 license-file = "LICENSE"
+edition = "2018"
 
 [dependencies]
 rand = "0.3"

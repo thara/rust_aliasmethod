@@ -5,137 +5,23 @@
 //
 // # Examples
 //
-// ```rust
-// use aliasmethod::{new_alias_table, alias_method}
+// ```
+// use rand::XorShiftRng;
+// use aliasmethod::AliasTable
 //
 // let weights = vec![1.0, 1.0, 8.0];
-// match new_alias_table(weights) {
-//     Err(e) => {
-//         println!(false, "error : {}", e);
-//     }
-//     Ok(alias_table) => {
-//         let n = alias_method().random(&alias_table);
-//         assert!(0 <= n && n <= weights.length);
-// }
+//
+// let alias_table = AliasTable::new(weights)?;
+//
+// let rng = XorShiftRng::from_seed([189522394, 1694417663, 1363148323, 4087496301]);
+// let n = alias_table.random(rng);
+//
+// assert!(0 <= n && n <= weights.length);
 // ```
 extern crate rand;
 
-use self::rand::distributions::{IndependentSample, Range};
-use self::rand::{thread_rng, Rng, ThreadRng};
-
 pub mod errors;
-use errors::AliasMethodError;
 
-pub struct AliasMethod<RNG: Rng> {
-    rng: RNG,
-}
+mod table;
 
-/// Creates a new AliasMethod using the ThreadRng
-pub fn alias_method() -> AliasMethod<ThreadRng> {
-    AliasMethod::new(thread_rng())
-}
-
-#[derive(Debug)]
-pub struct AliasTable {
-    len: i64,
-    prob: Vec<f64>,
-    alias: Vec<usize>,
-}
-
-impl<RNG: Rng> AliasMethod<RNG> {
-    /// Creates a new AliasMethod struct.
-    pub fn new(rng: RNG) -> Self {
-        AliasMethod { rng: rng }
-    }
-
-    /// Chooses a index.
-    pub fn random(&mut self, alias_table: &AliasTable) -> usize {
-        let u = self.rng.next_f64();
-        let range = Range::new(0, alias_table.len);
-        let n = range.ind_sample(&mut self.rng) as usize;
-
-        if u <= alias_table.prob[n] {
-            n
-        } else {
-            alias_table.alias[n]
-        }
-    }
-}
-
-/// Creates a new AliasTable struct.
-pub fn new_alias_table(weights: &[f64]) -> Result<AliasTable, AliasMethodError> {
-    let n = weights.len() as i64;
-
-    let sum = weights.iter().fold(0.0, |acc, x| acc + x);
-    if sum == 0.0 {
-        return Err(AliasMethodError::ZeroTotalWeights);
-    }
-
-    let mut prob = weights
-        .iter()
-        .map(|w| w * (n as f64) / sum)
-        .collect::<Vec<f64>>();
-    let mut h = 0;
-    let mut l = n - 1;
-    let mut hl: Vec<usize> = vec![0; n as usize];
-
-    for (i, p) in prob.iter().enumerate() {
-        if *p < 1.0 {
-            hl[l as usize] = i;
-            l -= 1;
-        }
-        if 1.0 < *p {
-            hl[h as usize] = i;
-            h += 1;
-        }
-    }
-
-    let mut a: Vec<usize> = vec![0; n as usize];
-
-    while h != 0 && l != n - 1 {
-        let j = hl[(l + 1) as usize];
-        let k = hl[(h - 1) as usize];
-
-        if 1.0 < prob[j] {
-            return Err(AliasMethodError::Internal {
-                text: format!("MUST: {} <= 1", prob[j]),
-            });
-        }
-        if prob[k] < 1.0 {
-            return Err(AliasMethodError::Internal {
-                text: format!("MUST: 1 <= {}", prob[k]),
-            });
-        }
-
-        a[j] = k;
-        prob[k] -= 1.0 - prob[j]; // - residual weight
-        l += 1;
-        if prob[k] < 1.0 {
-            hl[l as usize] = k;
-            l -= 1;
-            h -= 1;
-        }
-    }
-
-    Ok(AliasTable {
-        len: n,
-        prob: prob,
-        alias: a,
-    })
-}
-
-#[test]
-fn test_new_alias_table() {
-    let params = [vec![1.0, 1.0], vec![1.0, 1.0, 8.0]];
-    for sample_weights in params.into_iter() {
-        let alias_table = new_alias_table(&sample_weights);
-        match alias_table {
-            Ok(AliasTable { prob, .. }) => {
-                assert_eq!(prob.len(), sample_weights.len());
-            }
-            Err(e) => {
-                assert!(false, "error : {}", e);
-            }
-        }
-    }
-}
+pub use self::table::AliasTable;

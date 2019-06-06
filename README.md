@@ -11,15 +11,15 @@ The algorithm is principally useful when you need to random sampling with replac
 ## Example
 
 ```rust
-use aliasmethod::{new_alias_table, alias_method}
+use rand::XorShiftRng;
+use aliasmethod::AliasTable
 
 let weights = vec![1.0, 1.0, 8.0];
-match new_alias_table(weights) {
-    Err(e) => {
-        println!(false, "error : {}", e);
-    }
-    Ok(alias_table) => {
-        let n = alias_method().random(&alias_table);
-        assert!(0 <= n && n <= weights.length);
-}
+
+let alias_table = AliasTable::new(weights)?;
+
+let rng = XorShiftRng::from_seed([189522394, 1694417663, 1363148323, 4087496301]);
+let n = alias_table.random(rng);
+
+assert!(0 <= n && n <= weights.length);
 ```
