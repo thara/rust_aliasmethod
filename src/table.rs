@@ -1,6 +1,5 @@
 use crate::errors::Error;
 
-use rand::distributions::{IndependentSample, Range};
 use rand::Rng;
 
 #[derive(Debug)]
@@ -75,9 +74,8 @@ impl AliasTable {
 
     /// Chooses a index.
     pub fn random<R: Rng>(&self, mut rng: R) -> usize {
-        let u = rng.next_f64();
-        let range = Range::new(0, self.len);
-        let n = range.ind_sample(&mut rng) as usize;
+        let u = rng.gen::<f64>();
+        let n = rng.gen_range(0, self.len) as usize;
 
         if u <= self.prob[n] {
             n
