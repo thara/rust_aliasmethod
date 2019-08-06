@@ -1,6 +1,6 @@
 [package]
 name = "aliasmethod"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Tomochika Hara <rust@thara.dev>"]
 description = "Implementation of Walker's Alias method."
 homepage = "https://github.com/thara/rust_aliasmethod"
